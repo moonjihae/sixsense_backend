@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=flask
 ###info###
 /app/config.py
+/app/routes/diet.py
 ### Flask ###
 instance/*
 !instance/.gitignore
