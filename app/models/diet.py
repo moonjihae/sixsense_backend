@@ -1,5 +1,4 @@
 from app.database import db
-from datetime import datetime
 
 class Diet(db.Model):
     __tablename__='Diet'
@@ -14,13 +13,13 @@ class Diet(db.Model):
     img_path=db.Column(db.String(320))
 
 
-    def __init__(self,user_id,meal,food_info,cal):
+    def __init__(self,user_id,meal,food_info,cal,img_path,created_at):
         self.user_id = user_id
-
         self.cal=cal
         self.meal=meal
         self.food_info=food_info
-        self.created_at=datetime.now()
+        self.img_path=img_path
+        self.created_at=created_at
 
     def __repr__(self):
         return 'diet_id : %s, user_id : %s' % (self.diet_id, self.user_id)
