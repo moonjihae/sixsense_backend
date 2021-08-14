@@ -13,11 +13,11 @@ app=Flask(__name__)
 api=Api(app)
 api.add_namespace(User_api,'/users')
 api.add_namespace(Login_api,'/login')
-api.add_namespace(Diet_api,'/Diet')
+api.add_namespace(Diet_api,'/diets')
 
 def create_app(env):
     app.config.from_object(config[env])
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db,render_as_batch=True)
     return app
 

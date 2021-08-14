@@ -9,8 +9,7 @@ class Write_Profile(Resource):
 
     def post(self):
         data=request.get_json()
-        print(request.json)
-        user_id = data['userId']
+        user_id = data['user_id']
         user = User.query.filter_by(user_id=user_id).first()
         if user is None:
             return {"msg":"userID를 확인하세요."}
@@ -32,13 +31,11 @@ class Write_Profile(Resource):
             db.session.commit()
 
             return{
-                'messagae':"success"
+                'message':"success"
             }
-@User_api.route('/<int:user_id>')
-class Update_Profile(Resource):
-    def put(self,user_id):
+    def put(self):
         data = request.get_json()
-
+        user_id = data['user_id']
         user = User.query.filter_by(user_id=user_id).first()
         if user is None:
             return {"msg": "회원등록먼저 해주세요"}
@@ -58,10 +55,8 @@ class Update_Profile(Resource):
             db.session.add(recommended)
             db.session.commit()
 
-
-
             return {
-                'messagae': "success"
+                'message': "success"
             }
 
 def calculate_nutrition(gender,age,weight,heihgt,activity_level):

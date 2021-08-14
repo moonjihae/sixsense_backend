@@ -14,9 +14,10 @@ class Login(Resource):
         #회원추가
         if user is None:
             user=User(email=email,user_name=user_name)
+            print(user)
             db.session.add(user)
             db.session.commit()
-        return {"userId":user.user_id}
+        return {"user_id":user.user_id}
 
 
 
