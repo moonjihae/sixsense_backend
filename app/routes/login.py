@@ -6,7 +6,7 @@ Login_api=Namespace('Login_api')
 
 @Login_api.route('/')
 class Login(Resource):
-    def get(self):
+    def post(self):
         data = request.get_json()
         email=data['email']
         user_name=data['user_name']
