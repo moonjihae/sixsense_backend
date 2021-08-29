@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,jsonify
 from app.database import db,migrate
 from flask_restx import Api
 from app.routes.user import User_api
@@ -8,6 +8,9 @@ from app.config import config
 from app.models.user import User
 from app.models.recomended import Recommended
 from app.models.diet import Diet
+from app.models.like import Like
+from app.models.daily_nutrition import Daily_nutrition
+from app.utils.custom_exception import *
 
 app=Flask(__name__)
 api=Api(app)
@@ -20,4 +23,3 @@ def create_app(env):
     db.init_app(app)
     migrate.init_app(app, db,render_as_batch=True)
     return app
-
