@@ -1,12 +1,12 @@
 from app.database import db
 
 class Recommended(db.Model):
-    __tablename__='Recommended'
+    __tablename__='recommended'
     __table_args__={'mysql_collate':'utf8_general_ci'}
 
     rec_id = db.Column(db.Integer, primary_key=True, unique=True,autoincrement=True)
-    user_id = db.Column(db.Integer,db.ForeignKey('User.user_id'),nullable=False,unique=True)
-    cal = db.Column(db.Integer)
+    user_id = db.Column(db.Integer,db.ForeignKey('user.user_id'),nullable=False,unique=True)
+    cal = db.Column(db.Float)
     carbs = db.Column(db.Float)
     fat=db.Column(db.Float)
     protein=db.Column(db.Float)
