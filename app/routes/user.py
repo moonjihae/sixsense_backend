@@ -12,8 +12,8 @@ User_api=Namespace('User_api')
 class Profile(Resource):
     """회원정보 수정"""
     def put(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
 
         data=request.get_json()
         user_id = data['user_id']
@@ -54,8 +54,8 @@ class Profile(Resource):
 @User_api.route('/account')
 class Delete_account(Resource):
     def delete(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         user_id=request.args['user_id']
         validator.is_valid("",user_id)
         user=User.query.filter_by(user_id=user_id).first()

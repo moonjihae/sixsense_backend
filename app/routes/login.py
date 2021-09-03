@@ -1,5 +1,5 @@
 from app.models.user import User
-from flask import request,session
+from flask import request
 from flask_restx import Namespace,Resource
 from app.database import db
 from app.utils.custom_exception import CustomUserError
@@ -21,7 +21,7 @@ class Login(Resource):
                 db.session.add(user)
                 db.session.commit()
 
-            session['user_id']=user.user_id
+            # session['user_id']=user.user_id
             return {"user_id":user.user_id}
 
 
