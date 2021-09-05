@@ -31,12 +31,11 @@ class Profile(Resource):
                                                                                                    data['age'],
                                                                                                    data['weight'],
                                                                                                    data['height'],
-                                                                                                   data[
-                                                                                                       'activity_level'])
+                                                                                                   data['activity_level'])
                 db.session.add(check_recommended)
             else:
                 #recommended 테이블에 데이터 추가
-                cal,carbs,protein,fat=calculate_nutrition(user.gender,user.age,user.weight,user.height,user.activity_level)
+                cal,carbs,protein,fat=calculate_nutrition(data['gender'],data['age'],data['weight'],data['height'], data['activity_level'])
                 recommended=Recommended(user_id=user.user_id,cal=cal,carbs=carbs,protein=protein,fat=fat)
                 db.session.add(recommended)
             # 회원 정보 입력
