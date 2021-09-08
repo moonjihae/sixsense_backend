@@ -57,27 +57,28 @@ class Diet(Resource):
         total_fat=0
 
         food_info=[]
-        """영양정보 db에서 음식 검색"""
-        for food in food_names:
-            food_list=search.search_food(food['name'],"write")
-
-            if not food_list:
-
-                return CustomUserError(error_message="음식정보가 존재하지 않습니다.", status_code=500).to_dict()
-
-            else:
-                food_info.append({"no":food_list[0][0],"name":food_list[0][1],"cal":food_list[0][2],"amount":food['amount']})
-                total_cal+=food_list[0][2]*food['amount']
-                total_carbs+=food_list[0][3]*food['amount']
-                total_protein+=food_list[0][4]*food['amount']
-                total_fat+=food_list[0][5]*food['amount']
-
         ##만약 해당 날짜+ 아점저 기록있으면 이미 작성한 식단입니다라고 해줘야함
-        check_is_exist=Diet_obj.query.filter_by(user_id=user_id,created_at=created_at,meal=meal).first()
+        check_is_exist = Diet_obj.query.filter_by(user_id=user_id, created_at=created_at, meal=meal).first()
         if check_is_exist is not None:
             return CustomUserError(error_message="이미 식단 기록이 존재합니다.", status_code=500).to_dict()
 
         elif check_is_exist is None:
+            """영양정보 db에서 음식 검색"""
+            for food in food_names:
+                food_list = search.search_food(food['name'], "write")
+
+                if not food_list:
+
+                    return CustomUserError(error_message="음식정보가 존재하지 않습니다.", status_code=500).to_dict()
+
+                else:
+                    food_info.append(
+                        {"no": food_list[0][0], "name": food_list[0][1], "cal": food_list[0][2], "amount": food['amount']})
+                    total_cal += food_list[0][2] * food['amount']
+                    total_carbs += food_list[0][3] * food['amount']
+                    total_protein += food_list[0][4] * food['amount']
+                    total_fat += food_list[0][5] * food['amount']
+
             diet=Diet_obj(user_id=user_id,food_info=food_info,created_at=created_at,meal=meal,img_path="img_path",cal=total_cal)
             dn=Daily_nutrition.query.filter_by(user_id=user_id,created_at=created_at).first()
             if dn is None:
