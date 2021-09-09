@@ -65,6 +65,7 @@ class Diet(Resource):
         elif check_is_exist is None:
             """영양정보 db에서 음식 검색"""
             for food in food_names:
+
                 food_list = search.search_food(food['name'], "write")
 
                 if not food_list:
