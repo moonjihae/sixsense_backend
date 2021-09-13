@@ -3,9 +3,8 @@ from app.models.daily_nutrition import Daily_nutrition
 from app.models.recomended import Recommended
 from app.models.like import Like
 from app.models.user import User
-from flask import request,jsonify,session
+from flask import request,jsonify
 from flask_restx import Namespace,Resource
-from werkzeug.utils import secure_filename
 from app.database import db
 import datetime
 from dateutil.parser import parse
@@ -24,8 +23,8 @@ def Custom_user_error(e):
 class Diet(Resource):
     """개별 식단 조회"""
     def get(self):
-        if 'user_id' not in session:
-            return jsonify({"message": "로그인을 먼저해주세요"})
+        # if 'user_id' not in session:
+        #     return jsonify({"message": "로그인을 먼저해주세요"})
         diet_id = request.args.get('diet_id',default=None,type=int)
 
 
@@ -40,8 +39,8 @@ class Diet(Resource):
 
     """식단 입력"""
     def post(self):
-        if 'user_id' not in session:
-            return jsonify({"message":"로그인을 먼저해주세요"})
+        # if 'user_id' not in session:
+        #     return jsonify({"message":"로그인을 먼저해주세요"})
 
         # f=request.files['file']
         # f.save(secure_filename(f.filename))
@@ -58,27 +57,29 @@ class Diet(Resource):
         total_fat=0
 
         food_info=[]
-        """영양정보 db에서 음식 검색"""
-        for food in food_names:
-            food_list=search.search_food(food['name'],"write")
-
-            if not food_list:
-
-                return CustomUserError(error_message="음식정보가 존재하지 않습니다.", status_code=500).to_dict()
-
-            else:
-                food_info.append({"no":food_list[0][0],"name":food_list[0][1],"cal":food_list[0][2],"amount":food['amount']})
-                total_cal+=food_list[0][2]*food['amount']
-                total_carbs+=food_list[0][3]*food['amount']
-                total_protein+=food_list[0][4]*food['amount']
-                total_fat+=food_list[0][5]*food['amount']
-
         ##만약 해당 날짜+ 아점저 기록있으면 이미 작성한 식단입니다라고 해줘야함
-        check_is_exist=Diet_obj.query.filter_by(user_id=user_id,created_at=created_at,meal=meal).first()
+        check_is_exist = Diet_obj.query.filter_by(user_id=user_id, created_at=created_at, meal=meal).first()
         if check_is_exist is not None:
             return CustomUserError(error_message="이미 식단 기록이 존재합니다.", status_code=500).to_dict()
 
         elif check_is_exist is None:
+            """영양정보 db에서 음식 검색"""
+            for food in food_names:
+
+                food_list = search.search_food(food['name'], "write")
+
+                if not food_list:
+
+                    return CustomUserError(error_message="음식정보가 존재하지 않습니다.", status_code=500).to_dict()
+
+                else:
+                    food_info.append(
+                        {"no": food_list[0][0], "name": food_list[0][1], "cal": food_list[0][2], "amount": food['amount']})
+                    total_cal += food_list[0][2] * food['amount']
+                    total_carbs += food_list[0][3] * food['amount']
+                    total_protein += food_list[0][4] * food['amount']
+                    total_fat += food_list[0][5] * food['amount']
+
             diet=Diet_obj(user_id=user_id,food_info=food_info,created_at=created_at,meal=meal,img_path="img_path",cal=total_cal)
             dn=Daily_nutrition.query.filter_by(user_id=user_id,created_at=created_at).first()
             if dn is None:
@@ -101,8 +102,8 @@ class Diet(Resource):
 
     """식단수정"""
     def put(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         data=request.get_json()
         user_id=data['user_id']
         diet_id=data['diet_id']
@@ -154,8 +155,8 @@ class Diet(Resource):
 
     """개별 식단 삭제"""
     def delete(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         args=request.args
         diet_id=args.get('diet_id')
         user_id=args.get('user_id')
@@ -194,8 +195,8 @@ class Diet(Resource):
 class Diet_search(Resource):
     """음식 이름 검색 """
     def get(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         args=request.args
         food_name=args.get('food_name')
         food_info=search.search_food(food_name,'search')
@@ -208,8 +209,8 @@ class Diet_search(Resource):
 class Diet_list(Resource):
     """ 메인화면 (식단 목록 조회) """
     def post(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         data = request.get_json(force=True)
         user_id = data['user_id']
         meal = data['meal']
@@ -235,8 +236,8 @@ class Diet_list(Resource):
 class Diet_grape(Resource):
     """영양소 그래프 조회"""
     def post(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         data=request.get_json()
         user_id=data['user_id']
         start_date=parse(data['start_date'])
@@ -256,8 +257,8 @@ class Diet_grape(Resource):
 class Diet_grape(Resource):
     """식단 추천"""
     def get(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         args=request.args
         user_id = args.get('user_id')
         validator.is_valid("",user_id)
@@ -333,8 +334,8 @@ class Diet_grape(Resource):
 @Diet_api.route('/recommend/like')
 class preference(Resource):
     def get(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         user_id=request.args['user_id']
         no=request.args['no']
         validator.is_valid(user_id=user_id,param=no)

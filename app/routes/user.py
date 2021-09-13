@@ -12,8 +12,8 @@ User_api=Namespace('User_api')
 class Profile(Resource):
     """회원정보 수정"""
     def put(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
 
         data=request.get_json()
         user_id = data['user_id']
@@ -31,12 +31,11 @@ class Profile(Resource):
                                                                                                    data['age'],
                                                                                                    data['weight'],
                                                                                                    data['height'],
-                                                                                                   data[
-                                                                                                       'activity_level'])
+                                                                                                   data['activity_level'])
                 db.session.add(check_recommended)
             else:
                 #recommended 테이블에 데이터 추가
-                cal,carbs,protein,fat=calculate_nutrition(user.gender,user.age,user.weight,user.height,user.activity_level)
+                cal,carbs,protein,fat=calculate_nutrition(data['gender'],data['age'],data['weight'],data['height'], data['activity_level'])
                 recommended=Recommended(user_id=user.user_id,cal=cal,carbs=carbs,protein=protein,fat=fat)
                 db.session.add(recommended)
             # 회원 정보 입력
@@ -54,8 +53,8 @@ class Profile(Resource):
 @User_api.route('/account')
 class Delete_account(Resource):
     def delete(self):
-        if 'user_id' not in session:
-            return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
+        # if 'user_id' not in session:
+        #     return CustomUserError(error_message="로그인을 먼저해주세요.", status_code=500).to_dict()
         user_id=request.args['user_id']
         validator.is_valid("",user_id)
         user=User.query.filter_by(user_id=user_id).first()
